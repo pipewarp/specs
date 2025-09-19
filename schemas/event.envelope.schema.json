@@ -1,0 +1,108 @@
+{
+  "$id": "https://pipewarp.dev/schemas/0.1.0-alpha.0/event.envelope.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PipeWarp Event Envelope",
+  "type": "object",
+  "unevaluatedProperties": false,
+  "required": ["schemaVersion", "id", "type", "ts", "ctx"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0-alpha.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "type": {
+      "type": "string",
+      "enum": [
+        "run.created",
+        "run.queued",
+        "run.running",
+        "run.paused",
+        "run.succeeded",
+        "run.failed",
+        "run.canceled",
+        "task.created",
+        "task.queued",
+        "task.running",
+        "task.retrying",
+        "task.succeeded",
+        "task.failed"
+      ]
+    },
+    "ts": { "type": "string", "format": "date-time" },
+    "source": { "type": "string" },
+    "ctx": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["flowId", "runId"],
+      "properties": {
+        "flowId": { "type": "string" },
+        "runId": { "type": "string" },
+        "taskId": { "type": "string" },
+        "taskInvocationId": { "type": "string" }
+      }
+    },
+    "payload": {},
+    "artifacts": { "type": "array", "items": { "$ref": "#/$defs/Artifact" } },
+    "metrics": { "$ref": "#/$defs/Metrics" },
+    "trace": { "$ref": "#/$defs/Trace" },
+    "errors": { "$ref": "#/$defs/Errors" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "run.started" } } },
+      "then": { "properties": { "payload": { "$ref": "#/$defs/RunStarted" } } }
+    }
+  ],
+
+  "$defs": {
+    "RunStarted": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "trigger": { "type": "string" },
+        "initialCtx": { "type": "object" }
+      }
+    },
+    "Artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "uri", "contentType"],
+      "properties": {
+        "name": { "type": "string" },
+        "uri": { "type": "string" },
+        "contentType": { "type": "string" },
+        "bytes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "Errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message"],
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" },
+          "details": { "type": "string" }
+        }
+      }
+    },
+    "Metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "durationMs": { "type": "integer", "minimum": 0 },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "cpuMs": { "type": "integer", "minimum": 0 },
+        "gpuMs": { "type": "integer", "minimum": 0 },
+        "peakMemBytes": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "Trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "traceId": { "type": "string" },
+        "spanId": { "type": "string" }
+      }
+    }
+  }
+}

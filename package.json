@@ -1,0 +1,21 @@
+{
+  "name": "@pipewarp/specs",
+  "version": "0.1.0-alpha.0",
+  "type": "module",
+  "files": [
+    "schemas/",
+    "types/"
+  ],
+  "exports": {
+    "./schemas/*": "./schemas/*,",
+    "./types/*": "./types/*"
+  },
+  "scripts": {
+    "gen": "npx json2ts schemas -o types"
+  },
+  "author": "Andrew Mott",
+  "packageManager": "pnpm@10.17.0",
+  "devDependencies": {
+    "json-schema-to-typescript": "^15.0.4"
+  }
+}

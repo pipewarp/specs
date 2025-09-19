@@ -1,3 +1,10 @@
+# packages / build
+node_modules
+.venv
+dist
+__pycache__
+build
+
 # system files
 .DS_Store
 

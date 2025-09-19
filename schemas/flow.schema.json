@@ -1,0 +1,114 @@
+{
+  "$id": "https://pipewarp.dev/schemas/0.1.0-alpha.0/flow.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PipeWarp Flow Spec",
+  "type": "object",
+  "unevaluatedProperties": false,
+  "required": ["schemaVersion", "id", "version", "entry", "tasks"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "0.1.0-alpha.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "version": { "type": "string", "minLength": 1 },
+    "metadata": { "type": "object" },
+    "entry": { "type": "string", "minLength": 1 },
+    "tasks": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "$ref": "#/$defs/Task" }
+    }
+  },
+  "patternProperties": {
+    "^x-": {
+      "type": ["string", "number", "boolean", "object", "array", "null"]
+    }
+  },
+
+  "$defs": {
+    "Task": {
+      "type": "object",
+      "unevaluatedProperties": false,
+      "oneOf": [
+        { "$ref": "#/$defs/ToolTask" },
+        { "$ref": "#/$defs/TerminalTask" }
+      ]
+    },
+
+    "ToolTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "tool", "on"],
+      "properties": {
+        "tool": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "inputs": { "type": "object" },
+        "on": { "$ref": "#/$defs/OnTransitions" },
+        "retries": { "$ref": "#/$defs/Retries" },
+        "metadata": { "type": "object" }
+      }
+    },
+
+    "TerminalTask": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": { "type": "string", "enum": ["terminal"] },
+        "metadata": { "type": "object" }
+      }
+    },
+
+    "OnTransitions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["success", "error"],
+      "properties": {
+        "success": { "$ref": "#/$defs/NextRef" },
+        "error": { "$ref": "#/$defs/NextRefOrPolicy" }
+      }
+    },
+
+    "NextRef": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "object",
+          "required": ["goto"],
+          "additionalProperties": false,
+          "properties": {
+            "goto": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+
+    "NextRefOrPolicy": {
+      "oneOf": [
+        { "$ref": "#/$defs/NextRef" },
+        {
+          "type": "object",
+          "required": ["policy"],
+          "additionalProperties": false,
+          "properties": {
+            "policy": { "type": "string", "enum": ["half", "retry"] },
+            "goto": { "type": "string", "minLength": 1 },
+            "retries": { "$ref": "#/$defs/Retries" }
+          }
+        }
+      ]
+    },
+
+    "Retries": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "max": { "type": "integer", "minimum": 0, "default": 0 },
+        "backoff": {
+          "type": "string",
+          "enum": ["none", "linear", "exponential"],
+          "default": "exponential"
+        },
+        "baseMs": { "type": "integer", "minimum": 0, "default": 1000 }
+      }
+    }
+  }
+}
