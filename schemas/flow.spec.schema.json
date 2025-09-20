@@ -1,5 +1,5 @@
 {
-  "$id": "https://pipewarp.dev/schemas/0.1.0-alpha.0/flow.schema.json",
+  "$id": "https://pipewarp.dev/schemas/0.1.0-alpha.0/flow.spec.schema.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "PipeWarp Flow Spec",
   "type": "object",

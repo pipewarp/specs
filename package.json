@@ -1,13 +1,13 @@
 {
   "name": "@pipewarp/specs",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.1",
   "type": "module",
   "files": [
     "schemas/",
     "types/"
   ],
   "exports": {
-    "./schemas/*": "./schemas/*,",
+    "./schemas/*": "./schemas/*",
     "./types/*": "./types/*"
   },
   "scripts": {
