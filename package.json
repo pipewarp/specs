@@ -13,7 +13,6 @@
   "scripts": {
     "gen": "npx json2ts schemas -o types"
   },
-  "author": "Andrew Mott",
   "packageManager": "pnpm@10.17.0",
   "devDependencies": {
     "json-schema-to-typescript": "^15.0.4"

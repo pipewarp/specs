@@ -29,7 +29,7 @@ pnpm add github:pipewarp/specs
 Target a specific version with git tag (current version shown):
 
 ```bash
-pnpm add github:pipewarp/specs#v0.1.0-alpha.0
+pnpm add github:pipewarp/specs#v0.1.0-alpha.1
 ```
 
 ## Development Scripts
