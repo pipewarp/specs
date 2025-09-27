@@ -14,7 +14,7 @@ export type NextRef =
     };
 
 export interface PipeWarpFlow {
-  schemaVersion: "0.1.0-alpha.0";
+  schemaVersion: "0.1.0-alpha.1";
   id: string;
   title?: string;
   description?: string;
